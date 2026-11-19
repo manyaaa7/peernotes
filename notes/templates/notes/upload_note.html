@@ -1,0 +1,12 @@
+{% extends 'notes/base.html' %}
+{% block content %}
+<div class="card" style="max-width:600px; margin:1.5rem auto;">
+  <span class="badge">{{ course.code }} • Semester {{ course.semester }}</span>
+  <h2 style="margin:0.5rem 0 1rem;">Upload File to {{ course.title }}</h2>
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-gold" style="width:100%;">Upload File</button>
+  </form>
+</div>
+{% endblock %}

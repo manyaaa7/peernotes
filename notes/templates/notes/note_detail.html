@@ -1,0 +1,57 @@
+{% extends 'notes/base.html' %}
+{% block content %}
+<div class="card">
+  <div style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:1rem; margin-bottom:1rem;">
+    <div>
+      <span class="badge">{{ note.course.code }} — {{ note.course.title }}</span>
+      <span class="badge">{{ note.get_material_type_display }}</span>
+      <h2 style="margin-top:0.5rem;">{{ note.title }}</h2>
+      <p style="color:var(--muted); font-size:0.9rem;">Uploaded by {{ note.uploaded_by.username }} on {{ note.uploaded_at|date:"M d, Y" }} • Rating: ★ {{ note.average_rating }}</p>
+    </div>
+    <div>
+      <a href="{{ note.file.url }}" download class="btn btn-gold">Download File ({{ note.file.size|filesizeformat }})</a>
+      <form method="post" style="display:inline;">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="bookmark">
+        <button type="submit" class="btn btn-outline">{% if is_bookmarked %}★ Saved{% else %}☆ Bookmark{% endif %}</button>
+      </form>
+    </div>
+  </div>
+
+  {% if note.description %}<p>{{ note.description }}</p>{% endif %}
+
+  <div style="margin:1.5rem 0;">
+    {% if note.is_pdf %}
+      <iframe src="{{ note.file.url }}" width="100%" height="680px" style="border:1px solid var(--border); border-radius:8px;"></iframe>
+    {% elif note.is_image %}
+      <img src="{{ note.file.url }}" alt="{{ note.title }}" style="max-width:100%; border-radius:8px;">
+    {% else %}
+      <div class="card" style="text-align:center; background:var(--bg);">
+        <p><strong>File Type:</strong> {{ note.file_extension|upper }}</p>
+        <p>Click the Download button above to open this file on your device.</p>
+      </div>
+    {% endif %}
+  </div>
+
+  <div style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:1rem; border-top:1px solid var(--border); padding-top:1rem;">
+    <form method="post" style="display:flex; gap:0.5rem; align-items:center;">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="rate">
+      <label><strong>Rate:</strong></label>
+      <select name="score" style="width:auto;">
+        {% for i in "12345" %}
+          <option value="{{ forloop.counter }}" {% if user_rating == forloop.counter %}selected{% endif %}>{{ forloop.counter }} ★</option>
+        {% endfor %}
+      </select>
+      <button type="submit" class="btn">Submit</button>
+    </form>
+
+    <form method="post" style="display:flex; gap:0.5rem;">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="flag">
+      <input type="text" name="reason" placeholder="Report issue (wrong subject/spam)..." style="width:240px;" required>
+      <button type="submit" class="btn btn-danger">Report</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

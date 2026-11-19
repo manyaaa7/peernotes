@@ -1,0 +1,11 @@
+{% extends 'notes/base.html' %}
+{% block content %}
+<div class="card" style="max-width:450px; margin:2rem auto;">
+  <h2 style="margin-bottom:1rem;">Student Login</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn" style="width:100%;">Login</button>
+  </form>
+</div>
+{% endblock %}

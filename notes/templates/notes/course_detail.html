@@ -1,0 +1,35 @@
+{% extends 'notes/base.html' %}
+{% block content %}
+<div class="card" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
+  <div>
+    <span class="badge">{{ course.code }} • Semester {{ course.semester }}</span>
+    <h2 style="margin-top:0.4rem;">{{ course.title }}</h2>
+  </div>
+  <a href="{% url 'upload_to_course' course.id %}" class="btn btn-gold">+ Upload Note to This Subject</a>
+</div>
+
+<form method="get" class="filter-bar">
+  <select name="type" onchange="this.form.submit()">
+    <option value="">All Material Types</option>
+    {% for val, label in material_types %}
+      <option value="{{ val }}" {% if val == selected_type %}selected{% endif %}>{{ label }}</option>
+    {% endfor %}
+  </select>
+  <input type="text" name="q" value="{{ search_query }}" placeholder="Filter by unit, title, or topic...">
+  <button type="submit" class="btn">Filter</button>
+</form>
+
+<div class="grid">
+  {% for note in notes %}
+    <div class="card">
+      <span class="badge">{{ note.get_material_type_display }}</span>
+      {% if note.unit %}<span class="badge">{{ note.unit }}</span>{% endif %}
+      <h3 style="margin:0.6rem 0;"><a href="{% url 'note_detail' note.id %}">{{ note.title }}</a></h3>
+      <p style="font-size:0.85rem; color:var(--muted);">By {{ note.uploaded_by.username }} • ★ {{ note.average_rating }} • {{ note.file_extension|upper }}</p>
+      <a href="{% url 'note_detail' note.id %}" class="btn btn-outline">Read / Download</a>
+    </div>
+  {% empty %}
+    <div class="card"><p>No notes uploaded for this subject yet. Be the first to share!</p></div>
+  {% endfor %}
+</div>
+{% endblock %}

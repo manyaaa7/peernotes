@@ -1,0 +1,17 @@
+{% extends 'notes/base.html' %}
+{% block content %}
+<div class="card" style="text-align:center; padding:3rem 1.5rem;">
+  <span class="badge">Chanakya University • School of Engineering</span>
+  <h1 style="font-size:2.2rem; margin:1rem 0;">PeerNotes Engineering Notes Portal</h1>
+  <p style="color:var(--muted); max-width:620px; margin:0 auto 1.5rem;">
+    Read, download, and share lecture notes, PYQs, lab records, and slides across all B.Tech branches and semesters. Exclusively for Chanakya University students.
+  </p>
+  <a href="{% url 'signup' %}" class="btn btn-gold">Join with College Email</a>
+  <a href="{% url 'login' %}" class="btn btn-outline" style="margin-left:0.6rem;">Student Login</a>
+</div>
+<div class="grid">
+  {% for code, name in branches %}
+    <div class="card"><strong>{{ name }}</strong><p style="color:var(--muted); font-size:0.9rem;">All 8 Semesters • Core & Electives</p></div>
+  {% endfor %}
+</div>
+{% endblock %}

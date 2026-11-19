@@ -1,0 +1,35 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}PeerNotes — Chanakya University Engineering Notes{% endblock %}</title>
+  <meta name="description" content="PeerNotes: Peer-to-peer engineering notes portal for Chanakya University B.Tech students across all branches and semesters.">
+  <link rel="stylesheet" href="{% static 'notes/style.css' %}">
+</head>
+<body>
+  <nav class="navbar">
+    <a href="{% url 'landing' %}" class="brand">PeerNotes</a>
+    <div>
+      {% if user.is_authenticated %}
+        <a href="{% url 'dashboard' %}">Browse Courses</a>
+        <a href="{% url 'profile' %}">My Profile ({{ user.username }})</a>
+        <form method="post" action="{% url 'logout' %}" style="display:inline;">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-gold" style="margin-left:1rem; padding:0.4rem 0.9rem;">Logout</button>
+        </form>
+      {% else %}
+        <a href="{% url 'login' %}">Login</a>
+        <a href="{% url 'signup' %}" class="btn btn-gold">Sign Up</a>
+      {% endif %}
+    </div>
+  </nav>
+  <div class="container">
+    {% for message in messages %}
+      <div class="alert">{{ message }}</div>
+    {% endfor %}
+    {% block content %}{% endblock %}
+  </div>
+</body>
+</html>

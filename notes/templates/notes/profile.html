@@ -1,0 +1,28 @@
+{% extends 'notes/base.html' %}
+{% block content %}
+<div class="card">
+  <h2>{{ user.username }}'s Profile</h2>
+  <p style="color:var(--muted);">{{ user.email }} • {{ user.get_branch_display }} (Batch 20{{ user.joining_year|stringformat:"s"|slice:"2:" }})</p>
+</div>
+
+<h3>My Bookmarked Notes</h3>
+<div class="grid">
+  {% for note in bookmarks %}
+    <div class="card">
+      <span class="badge">{{ note.course.code }}</span>
+      <h4><a href="{% url 'note_detail' note.id %}">{{ note.title }}</a></h4>
+    </div>
+  {% empty %}<p>No bookmarked notes yet.</p>{% endfor %}
+</div>
+
+<h3 style="margin-top:1.5rem;">My Uploaded Files</h3>
+<div class="grid">
+  {% for note in my_uploads %}
+    <div class="card">
+      <span class="badge">{{ note.course.code }}</span>
+      <h4><a href="{% url 'note_detail' note.id %}">{{ note.title }}</a></h4>
+      <a href="{% url 'delete_note' note.id %}" class="btn btn-danger" style="margin-top:0.6rem; padding:0.35rem 0.8rem;">Delete</a>
+    </div>
+  {% empty %}<p>You haven't uploaded any notes yet.</p>{% endfor %}
+</div>
+{% endblock %}

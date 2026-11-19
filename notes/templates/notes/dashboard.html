@@ -1,0 +1,49 @@
+{% extends 'notes/base.html' %}
+{% block content %}
+<div class="card">
+  <h2>Explore All B.Tech Courses & Notes</h2>
+  <p style="color:var(--muted);">Your batch: {{ user.get_branch_display }} — switch freely to any branch or semester below.</p>
+  <form method="get" class="filter-bar">
+    <select name="branch" onchange="this.form.submit()">
+      {% for code, label in branches %}
+        <option value="{{ code }}" {% if code == selected_branch %}selected{% endif %}>{{ label }}</option>
+      {% endfor %}
+    </select>
+    <select name="sem" onchange="this.form.submit()">
+      {% for num, label in semesters %}
+        <option value="{{ num }}" {% if num == selected_sem %}selected{% endif %}>{{ label }}</option>
+      {% endfor %}
+    </select>
+    <input type="text" name="q" value="{{ search_query }}" placeholder="Search subject code, title, or topic...">
+    <button type="submit" class="btn">Search</button>
+  </form>
+</div>
+
+{% if matching_notes is not None %}
+  <h3>Search Results ({{ matching_notes.count }} files)</h3>
+  <div class="grid">
+    {% for note in matching_notes %}
+      <div class="card">
+        <span class="badge">{{ note.course.code }} • Sem {{ note.course.semester }}</span>
+        <h4 style="margin:0.5rem 0;"><a href="{% url 'note_detail' note.id %}">{{ note.title }}</a></h4>
+        <p style="font-size:0.85rem; color:var(--muted);">{{ note.get_material_type_display }} • ★ {{ note.average_rating }}</p>
+      </div>
+    {% empty %}<p>No matching files found.</p>{% endfor %}
+  </div>
+{% else %}
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+    <h3>Subjects in Semester {{ selected_sem }}</h3>
+    <a href="{% url 'add_custom_course' selected_branch selected_sem %}" class="btn btn-outline">+ Add Open Elective / Other Subject</a>
+  </div>
+  <div class="grid">
+    {% for course in courses %}
+      <div class="card">
+        <span class="badge">{{ course.code }}</span>
+        <h3 style="margin:0.6rem 0;">{{ course.title }}</h3>
+        <p style="color:var(--muted); font-size:0.9rem;">{{ course.note_count }} uploaded file(s)</p>
+        <a href="{% url 'course_detail' course.id %}" class="btn">Open Subject</a>
+      </div>
+    {% empty %}<p>No subjects listed yet for this selection.</p>{% endfor %}
+  </div>
+{% endif %}
+{% endblock %}
